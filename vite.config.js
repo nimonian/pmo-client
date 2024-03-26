@@ -4,7 +4,9 @@ import 'dotenv/config'
 
 export default defineConfig({
   server: {
-    port: process.env.PORT
+    port: process.env.PORT,
+    host: true,
+    strictPort: true
   },
   plugins: [vue()]
 })
