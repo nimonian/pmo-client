@@ -4,7 +4,7 @@ import 'dotenv/config'
 
 export default defineConfig({
   server: {
-    port: process.env.PORT,
+    port: process.env.PORT || 3000,
     host: true,
     strictPort: true
   },

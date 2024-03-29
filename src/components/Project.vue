@@ -1,17 +1,14 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import api from '../services/api'
+import Project from '../services/projects.js'
 
 const route = useRoute()
-const projectId = route.params.id
 
 const project = ref(null)
-const columns = ref(null)
 
 onMounted(async () => {
-  project.value = await api.get(`/projects/${projectId}`)
-  columns.value = await api.get(`/projects/${projectId}/columns`)
+  project.value = await Project.fetch(route.params.id)
 })
 </script>
 
@@ -21,31 +18,60 @@ onMounted(async () => {
     <p>{{ project.description }}</p>
   </section>
 
-  <section v-if="columns" class="columns">
-    <article v-for="column in columns" :key="column.id" class="column">
-      <Card>
-        <template #title>
-          {{ column.title }}
-        </template>
-        <template #content>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Pariatur,
-            sapiente.
-          </p>
-        </template>
-      </Card>
-    </article>
+  <section v-if="project?.lanes">
+    <draggable
+      :list="project.lanes"
+      group="lanes"
+      item-key="id"
+      class="lanes"
+      @update="Project.setLaneOrder(project, $event)"
+    >
+      <template #item="{ element: lane }">
+        <Card class="lane">
+          <template #title>
+            {{ lane.title }}
+          </template>
+          <template #content>
+            <draggable
+              v-model="lane.tasks"
+              group="items"
+              item-key="id"
+              class="tasks"
+            >
+              <template #item="{ element: item }">
+                <Card class="task">
+                  <template #title>
+                    {{ item.title }}
+                  </template>
+                </Card>
+              </template>
+            </draggable>
+          </template>
+        </Card>
+      </template>
+    </draggable>
   </section>
+
+  <pre
+    >{{ project }}
+  </pre>
 </template>
 
 <style scoped>
-.columns {
+.lanes {
   display: flex;
   gap: 1rem;
 }
 
-.column {
+.lane {
   flex: 1;
   max-width: 20rem;
+  background-color: hsl(0, 0%, 95%);
+}
+
+.tasks {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 </style>

@@ -1,16 +1,23 @@
+<script setup>
+import { ref, onMounted } from 'vue'
+import Project from '../services/projects.js'
+
+const projects = ref([])
+
+onMounted(async () => {
+  projects.value = await Project.fetchAll()
+})
+</script>
+
 <template>
   <h2>Home</h2>
 
   <h3>Projects</h3>
   <ul>
-    <li>
-      <router-link to="/project/1">Project 1</router-link>
-    </li>
-    <li>
-      <router-link to="/project/2">Project 2</router-link>
-    </li>
-    <li>
-      <router-link to="/project/3">Project 3</router-link>
+    <li v-for="project in projects" :key="project.id">
+      <router-link :to="`/project/${project.id}`">
+        {{ project.title }}
+      </router-link>
     </li>
   </ul>
 </template>

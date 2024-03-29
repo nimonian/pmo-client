@@ -6,6 +6,16 @@ body {
   width: 100%;
 }
 
+nav {
+  align-items: center;
+  background-color: hsl(0, 0%, 95%);
+  display: flex;
+  gap: 1rem;
+  height: 50px;
+  justify-content: start;
+  padding-inline: 1rem;
+}
+
 main {
   padding: 1rem;
 }
