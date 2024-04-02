@@ -11,13 +11,22 @@ class Project {
     return data
   }
 
-  static async setLaneOrder(project, event) {
-    project.lanes = project.lanes.map((lane, index) => {
-      lane.order = index
-      return lane
-    })
+  static async setLaneOrder(project) {
+    project.lanes = project.lanes.map((lane, i) => ({ ...lane, order: i }))
 
     const data = await api.put(`/projects/lanes/order`, project.lanes)
+    return data
+  }
+
+  static async setTaskOrder(project, event) {
+    const ids = [event.from.id, event.to.id]
+    const lanes = project.lanes.filter(lane => ids.includes(lane.id))
+
+    for (const lane of lanes) {
+      lane.tasks = lane.tasks.map((task, i) => ({ ...task, order: i }))
+    }
+
+    const data = await api.put(`/projects/tasks/order`, lanes)
     return data
   }
 }

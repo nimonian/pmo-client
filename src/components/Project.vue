@@ -24,7 +24,7 @@ onMounted(async () => {
       group="lanes"
       item-key="id"
       class="lanes"
-      @update="Project.setLaneOrder(project, $event)"
+      @end="Project.setLaneOrder(project, $event)"
     >
       <template #item="{ element: lane }">
         <Card class="lane">
@@ -34,9 +34,11 @@ onMounted(async () => {
           <template #content>
             <draggable
               v-model="lane.tasks"
+              :id="lane.id"
               group="items"
               item-key="id"
               class="tasks"
+              @end="Project.setTaskOrder(project, $event)"
             >
               <template #item="{ element: item }">
                 <Card class="task">
