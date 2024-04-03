@@ -26,6 +26,20 @@ const api = {
     return data
   },
 
+  async post(path, body) {
+    const url = this.getUrl(path)
+
+    const options = {
+      method: 'POST',
+      headers: this.getHeaders(),
+      body: JSON.stringify(body)
+    }
+
+    const response = await fetch(url, options)
+    const data = await response.json()
+    return data
+  },
+
   async put(path, body) {
     const url = this.getUrl(path)
 

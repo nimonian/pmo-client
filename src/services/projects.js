@@ -1,24 +1,29 @@
+import { ref } from 'vue'
 import api from './api.js'
 
 class Project {
+  static model = ref(null)
+
   static async fetch(id) {
     const data = await api.get(`/projects/${id}`)
-    return data
+    Project.model.value = data
   }
 
   static async fetchAll() {
-    const data = await api.get('/projects')
+    const data = await api.get(`/projects`)
     return data
   }
 
-  static async setLaneOrder(project) {
+  static async setLaneOrder() {
+    const project = Project.model.value
     project.lanes = project.lanes.map((lane, i) => ({ ...lane, order: i }))
 
     const data = await api.put(`/projects/lanes/order`, project.lanes)
     return data
   }
 
-  static async setTaskOrder(project, event) {
+  static async setTaskOrder(event) {
+    const project = Project.model.value
     const ids = [event.from.id, event.to.id]
     const lanes = project.lanes.filter(lane => ids.includes(lane.id))
 
@@ -28,6 +33,16 @@ class Project {
 
     const data = await api.put(`/projects/tasks/order`, lanes)
     return data
+  }
+
+  static async addLane(title = 'New Lane') {
+    const project = Project.model.value
+    const order_index = project.lanes.length
+    const lane = await api.post(`/projects/${project.id}/lanes`, {
+      title,
+      order_index
+    })
+    project.lanes.push(lane)
   }
 }
 
