@@ -70,8 +70,7 @@ onMounted(async () => {
 }
 
 .lane {
-  min-width: 10rem;
-  max-width: 20rem;
+  width: 20rem;
   background-color: hsl(0, 0%, 95%);
   height: fit-content;
   flex-shrink: 0;
